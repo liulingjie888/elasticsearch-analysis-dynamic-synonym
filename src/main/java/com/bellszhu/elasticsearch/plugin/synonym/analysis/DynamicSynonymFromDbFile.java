@@ -43,10 +43,6 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
 
     private long lastModified;
 
-    private Connection connection = null;
-
-    private Statement statement = null;
-
     private Path conf_dir;
 
     private JdbcConfig jdbcConfig;
@@ -62,6 +58,12 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
         this.location = location;
         // 读取配置文件
         setJdbcConfig();
+        // 加载驱动
+        try {
+            Class.forName(jdbcConfig.getDriver());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         // 判断是否需要加载
         isNeedReloadSynonymMap();
     }
@@ -140,29 +142,34 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
      * @return getLastModify
      */
     public Long getLastModify() {
+        Connection connection = null;
+        Statement statement = null;
         ResultSet resultSet = null;
         Long last_modify_long = null;
         try {
-            if (connection == null || statement == null) {
-                Class.forName(jdbcConfig.getDriver());
-                connection = DriverManager.getConnection(
-                        jdbcConfig.getUrl(),
-                        jdbcConfig.getUsername(),
-                        jdbcConfig.getPassword()
-                );
-                statement = connection.createStatement();
-            }
+            connection = DriverManager.getConnection(
+                    jdbcConfig.getUrl(),
+                    jdbcConfig.getUsername(),
+                    jdbcConfig.getPassword()
+            );
+            statement = connection.createStatement();
             resultSet = statement.executeQuery(jdbcConfig.getSynonymLastModitimeSql());
             while (resultSet.next()) {
                 Timestamp last_modify_dt = resultSet.getTimestamp("maxModitime");
                 last_modify_long = last_modify_dt.getTime();
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             logger.error("获取同义词库最后一次修改的时间",e);
         } finally {
             try {
                 if (resultSet != null) {
                     resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -178,33 +185,37 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
      */
     public ArrayList<String> getDBData() {
         ArrayList<String> arrayList = new ArrayList<>();
+        Connection connection = null;
+        Statement statement = null;
         ResultSet resultSet = null;
         try {
-            if (connection == null || statement == null) {
-                Class.forName(jdbcConfig.getDriver());
-                connection = DriverManager.getConnection(
-                        jdbcConfig.getUrl(),
-                        jdbcConfig.getUsername(),
-                        jdbcConfig.getPassword()
-                );
-                statement = connection.createStatement();
-            }
+            connection = DriverManager.getConnection(
+                    jdbcConfig.getUrl(),
+                    jdbcConfig.getUsername(),
+                    jdbcConfig.getPassword()
+            );
+            statement = connection.createStatement();
             resultSet = statement.executeQuery(jdbcConfig.getSynonymWordSql());
             while (resultSet.next()) {
                 String theWord = resultSet.getString("words");
                 arrayList.add(theWord);
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             logger.error("查询数据库中的同义词异常",e);
         } finally {
             try {
                 if (resultSet != null) {
                     resultSet.close();
                 }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
         }
         return arrayList;
     }
