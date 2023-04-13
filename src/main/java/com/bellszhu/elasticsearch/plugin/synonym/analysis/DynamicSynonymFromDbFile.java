@@ -2,7 +2,6 @@ package com.bellszhu.elasticsearch.plugin.synonym.analysis;
 
 import com.bellszhu.elasticsearch.plugin.DynamicSynonymPlugin;
 import com.bellszhu.elasticsearch.plugin.synonym.JdbcConfig;
-import com.sun.deploy.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
