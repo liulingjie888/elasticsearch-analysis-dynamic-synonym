@@ -230,10 +230,10 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
         try {
             ArrayList<String> dbData = getDBData();
             for (int i = 0; i < dbData.size(); i++) {
-                logger.info("load the synonym from db," + dbData.get(i));
                 sb.append(dbData.get(i))
                         .append(System.getProperty("line.separator"));
             }
+            logger.info("load the synonym from db");
         } catch (Exception e) {
             logger.error("reload synonym from db failed");
         }
