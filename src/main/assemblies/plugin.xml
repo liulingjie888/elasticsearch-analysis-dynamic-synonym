@@ -15,6 +15,12 @@
             <filtered>true</filtered>
         </file>
     </files>
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/config</directory>
+            <outputDirectory>config</outputDirectory>
+        </fileSet>
+    </fileSets>
     <dependencySets>
         <dependencySet>
             <useProjectArtifact>true</useProjectArtifact>
