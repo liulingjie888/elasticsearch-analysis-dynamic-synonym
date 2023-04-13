@@ -2,6 +2,7 @@ package com.bellszhu.elasticsearch.plugin.synonym.analysis;
 
 import com.bellszhu.elasticsearch.plugin.DynamicSynonymPlugin;
 import com.bellszhu.elasticsearch.plugin.synonym.JdbcConfig;
+import com.sun.deploy.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -38,8 +39,15 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
 
     private Environment env;
 
-    // 数据库配置
+    /**
+     * 动态配置类型
+     */
     private String location;
+
+    /**
+     * 作用类型
+     */
+    private String group;
 
     private long lastModified;
 
@@ -47,15 +55,15 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
 
     private JdbcConfig jdbcConfig;
 
-
     DynamicSynonymFromDbFile(Environment env, Analyzer analyzer,
-                        boolean expand,boolean lenient, String format, String location) {
+                        boolean expand,boolean lenient, String format, String location, String group) {
         this.analyzer = analyzer;
         this.expand = expand;
         this.lenient = lenient;
         this.format = format;
         this.env = env;
         this.location = location;
+        this.group = group;
         // 读取配置文件
         setJdbcConfig();
         // 加载驱动
@@ -195,7 +203,11 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
                     jdbcConfig.getPassword()
             );
             statement = connection.createStatement();
-            resultSet = statement.executeQuery(jdbcConfig.getSynonymWordSql());
+            String sql = jdbcConfig.getSynonymWordSql();
+            if (group != null && !"".equals(group.trim())) {
+                sql = String.format("%s AND group = '%s'", group);
+            }
+            resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 String theWord = resultSet.getString("words");
                 arrayList.add(theWord);

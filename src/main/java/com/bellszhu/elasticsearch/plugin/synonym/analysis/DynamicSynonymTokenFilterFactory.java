@@ -53,6 +53,7 @@ public class DynamicSynonymTokenFilterFactory extends
     private final boolean lenient;
     private final String format;
     private final int interval;
+    private final String group;
     protected SynonymMap synonymMap;
     protected Map<AbsSynonymFilter, Integer> dynamicSynonymFilters = new WeakHashMap<>();
     protected final Environment environment;
@@ -78,6 +79,7 @@ public class DynamicSynonymTokenFilterFactory extends
         this.expand = settings.getAsBoolean("expand", true);
         this.lenient = settings.getAsBoolean("lenient", false);
         this.format = settings.get("format", "");
+        this.group = settings.get("group", "");
         boolean updateable = settings.getAsBoolean("updateable", false);
         this.analysisMode = updateable ? AnalysisMode.SEARCH_TIME : AnalysisMode.ALL;
         this.environment = env;
@@ -165,7 +167,7 @@ public class DynamicSynonymTokenFilterFactory extends
             SynonymFile synonymFile;
             if ("fromDB".equals(location)) {
                 synonymFile = new DynamicSynonymFromDbFile(environment, analyzer, expand, lenient, format,
-                        location);
+                        location, group);
             } else if (location.startsWith("http://") || location.startsWith("https://")) {
                 synonymFile = new RemoteSynonymFile(
                         environment, analyzer, expand, lenient,  format, location);
