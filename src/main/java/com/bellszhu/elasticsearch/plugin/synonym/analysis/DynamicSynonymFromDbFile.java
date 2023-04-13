@@ -204,7 +204,7 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
             statement = connection.createStatement();
             String sql = jdbcConfig.getSynonymWordSql();
             if (group != null && !"".equals(group.trim())) {
-                sql = String.format("%s AND group = '%s'", group);
+                sql = String.format("%s AND group = '%s'", sql, group);
             }
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -246,7 +246,7 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
             }
             logger.info("load the synonym from db");
         } catch (Exception e) {
-            logger.error("reload synonym from db failed");
+            logger.error("reload synonym from db failed:", e);
         }
         return new StringReader(sb.toString());
     }
