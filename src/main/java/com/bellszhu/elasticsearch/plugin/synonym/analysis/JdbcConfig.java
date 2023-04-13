@@ -1,4 +1,4 @@
-package com.bellszhu.elasticsearch.plugin.synonym;
+package com.bellszhu.elasticsearch.plugin.synonym.analysis;
 
 /**
  * @author liulingjie
@@ -19,18 +19,39 @@ public class JdbcConfig {
         this.driver = driver;
     }
 
+    /**
+     * 驱动名
+     */
     private String driver;
 
+    /**
+     * 数据库url
+     */
     private String url;
 
+    /**
+     * 数据库账号
+     */
     private String username;
 
+    /**
+     * 数据库密码
+     */
     private String password;
 
+    /**
+     * 查询近义词汇的sql，注意是以words字段展示
+     */
     private String synonymWordSql;
 
+    /**
+     * 获取近义词最近更新时间的sql
+     */
     private String synonymLastModitimeSql;
 
+    /**
+     * 间隔，暂时无用
+     */
     private Integer interval;
 
     public String getDriver() { return driver; }

@@ -1,7 +1,6 @@
 package com.bellszhu.elasticsearch.plugin.synonym.analysis;
 
 import com.bellszhu.elasticsearch.plugin.DynamicSynonymPlugin;
-import com.bellszhu.elasticsearch.plugin.synonym.JdbcConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -19,11 +18,11 @@ import java.util.Properties;
  * @author liulingjie
  * @date 2023/4/12 19:43
  */
-public class DynamicSynonymFromDbFile implements SynonymFile {
+public class DynamicSynonymFromDb implements SynonymFile {
 
     /**
      * 配置文件名
-      */
+     */
     private final static String DB_PROPERTIES = "jdbc.properties";
 
     private static Logger logger = LogManager.getLogger("dynamic-synonym");
@@ -54,8 +53,8 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
 
     private JdbcConfig jdbcConfig;
 
-    DynamicSynonymFromDbFile(Environment env, Analyzer analyzer,
-                        boolean expand,boolean lenient, String format, String location, String group) {
+    DynamicSynonymFromDb(Environment env, Analyzer analyzer,
+                         boolean expand, boolean lenient, String format, String location, String group) {
         this.analyzer = analyzer;
         this.expand = expand;
         this.lenient = lenient;
