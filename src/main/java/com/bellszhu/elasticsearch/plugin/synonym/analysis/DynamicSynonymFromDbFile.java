@@ -204,7 +204,7 @@ public class DynamicSynonymFromDbFile implements SynonymFile {
             statement = connection.createStatement();
             String sql = jdbcConfig.getSynonymWordSql();
             if (group != null && !"".equals(group.trim())) {
-                sql = String.format("%s AND group = '%s'", sql, group);
+                sql = String.format("%s AND `key_group` = '%s'", sql, group);
             }
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
